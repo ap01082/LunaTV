@@ -19,11 +19,20 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const apiUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
+    //const apiUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
+    // --- 修改开始 ---
+    // 1. 获取环境变量中的代理地址，如果没有设置则默认使用官方地址
+    // 注意：Vercel/Node.js 环境变量在 process.env 下
+    const proxyHost = process.env.YOUTUBE_PROXY || 'https://www.youtube.com';
+    
+    // 2. 构建请求 URL，指向你的代理或官方
+    // 如果 proxyHost 是 cf.你的域名，它会请求 cf.你的域名/oembed...
+    const apiUrl = `${proxyHost}/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
+    // --- 修改结束 ---
 
     const response = await fetch(apiUrl, {
       headers: {
-        'User-Agent': 'LunaTV/1.0 (https://github.com/yourusername/LunaTV)',
+        'User-Agent': 'LunaTV/1.0 (https://github.com/ap01082/LunaTV)',
         'Accept': 'application/json',
       },
       next: {
